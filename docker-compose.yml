@@ -1,0 +1,43 @@
+version: "3.8"
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - GENERIC_TIMEZONE=Asia/Kolkata
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=adminpass
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - NODE_ENV=production
+      - WEBHOOK_URL=https://your-ngrok-url.ngrok.io
+    volumes:
+      - ./n8n_data:/home/node/.n8n
+      - ./service-account.json:/home/node/service-account.json:ro
+      - ./credentials:/home/node/credentials:ro
+    depends_on:
+      - ngrok
+    networks:
+      - whatsapp-network
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    restart: always
+    command:
+      - "tunnel"
+      - "--label"
+      - "edge=edghts_2a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
+      - "http://n8n:5678"
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    ports:
+      - "4040:4040"
+    networks:
+      - whatsapp-network
+
+networks:
+  whatsapp-network:
+    driver: bridge

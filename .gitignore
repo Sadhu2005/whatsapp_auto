@@ -1,0 +1,36 @@
+# Credentials and sensitive files
+service-account.json
+credentials/
+*.key
+*.pem
+.env
+.env.local
+
+# n8n data
+n8n_data/
+
+# Logs
+*.log
+ngrok.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+.docker/
+
+# Temporary files
+tmp/
+temp/
