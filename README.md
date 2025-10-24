@@ -32,6 +32,8 @@ This project automates resume processing through WhatsApp using n8n, Twilio, Goo
 3. Note your sandbox number and join code
 4. Configure webhook URL (after setting up ngrok)
 
+![Twilio WhatsApp Sandbox Setup](images/twilio-setup.png)
+
 #### B. Google Cloud Setup
 1. Create project in [Google Cloud Console](https://console.cloud.google.com)
 2. Enable Google Drive API and Google Sheets API
@@ -115,7 +117,11 @@ HTTP Request (send auto-reply)
 ```
 
 ### **Visual Workflow:**
-The n8n workflow editor shows a complete automation pipeline from receiving a WhatsApp message to sending an auto-reply. The workflow includes:
+The n8n workflow editor shows a complete automation pipeline from receiving a WhatsApp message to sending an auto-reply:
+
+![n8n Workflow](images/n8n-workflow.png)
+
+The workflow includes:
 
 1. **WhatsApp Webhook** - Entry point listening for Twilio webhooks
 2. **Has Media?** - Conditional check for file attachments
@@ -144,6 +150,9 @@ When a resume is processed, the system logs structured data into your Google She
 
 ### **Sample Google Sheet Output:**
 The system creates a structured spreadsheet with:
+
+![Google Sheets Output](images/google-sheets-output.png)
+
 - **Header Row**: Column names (Received_On, Sender, Name, Email, Phone, Skills, Experience, Resume_Link)
 - **Data Rows**: One row per processed resume with extracted information
 - **Real-time Updates**: New entries appear automatically as resumes are processed
