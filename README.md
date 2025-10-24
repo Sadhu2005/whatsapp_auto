@@ -93,6 +93,9 @@ This project automates resume processing through WhatsApp using n8n, Twilio, Goo
 
 ## n8n Workflow Structure
 
+The complete workflow is visualized in the n8n editor with the following nodes:
+
+### **Workflow Overview:**
 ```
 Webhook (Twilio) 
     ↓
@@ -102,13 +105,58 @@ HTTP Request (download file)
     ↓
 Function (extract text)
     ↓
-OpenAI (parse skills/experience)
+Gemini Analysis (parse skills/experience)
     ↓
 Google Drive (upload file)
     ↓
 Google Sheets (append row)
     ↓
 HTTP Request (send auto-reply)
+```
+
+### **Visual Workflow:**
+The n8n workflow editor shows a complete automation pipeline from receiving a WhatsApp message to sending an auto-reply. The workflow includes:
+
+1. **WhatsApp Webhook** - Entry point listening for Twilio webhooks
+2. **Has Media?** - Conditional check for file attachments
+3. **Download Resume** - Downloads PDF/DOCX files from Twilio
+4. **Extract Basic Info** - JavaScript function for initial text parsing
+5. **Gemini Analysis** - AI-powered extraction using Google Gemini API
+6. **Upload to Drive** - Stores files in Google Drive
+7. **Log to Sheets** - Records structured data in Google Sheets
+8. **Send Auto-Reply** - Sends confirmation via Twilio WhatsApp API
+
+## Expected Results
+
+### **Google Sheets Output**
+When a resume is processed, the system logs structured data into your Google Sheet:
+
+| Column | Description | Example Data |
+|--------|-------------|--------------|
+| **Received_On** | Timestamp of message | `2025-10-24T10:45:30.000` |
+| **Sender** | WhatsApp number | `whatsapp:70221` |
+| **Name** | Extracted candidate name | `SADHU J` |
+| **Email** | Extracted email address | `sadhuj2005@gmail.com` |
+| **Phone** | Extracted phone number | `702215473` |
+| **Skills** | AI-identified skills | `Languages: Python, Machine Learning, AI` |
+| **Experience** | Work experience summary | `AI & ML Engineer with 3 years experience` |
+| **Resume_Link** | Google Drive file link | `https://drive.google.com/file/d/abc123` |
+
+### **Sample Google Sheet Output:**
+The system creates a structured spreadsheet with:
+- **Header Row**: Column names (Received_On, Sender, Name, Email, Phone, Skills, Experience, Resume_Link)
+- **Data Rows**: One row per processed resume with extracted information
+- **Real-time Updates**: New entries appear automatically as resumes are processed
+
+### **Google Drive Integration:**
+- **File Upload**: Original resume files (PDF/DOCX) uploaded to designated folder
+- **File Organization**: Files properly named and stored
+- **Direct Links**: Shareable links available in Google Sheets
+
+### **WhatsApp Auto-Reply:**
+Users receive immediate confirmation messages like:
+```
+"Thank you SADHU J! Your resume has been received and logged successfully. We'll review it and get back to you soon."
 ```
 
 ## File Structure
@@ -128,7 +176,30 @@ whatsapp_auto/
 - Consider hosting n8n on cloud platform for production
 
 ## Troubleshooting
-- Check n8n logs: `docker compose logs n8n`
-- Verify ngrok is running and accessible
-- Ensure all credentials are properly configured
-- Check Google Sheet permissions
+
+### **Common Issues:**
+
+#### **Private Key Validation Failed**
+If you get `Private key validation failed: secretOrPrivateKey must be an asymmetric key when using RS256`:
+
+1. **Fix the JSON file**: Open your `service-account.json` in a text editor
+2. **Replace `\n` with actual newlines**: Find the `private_key` field and replace all `\n` with actual newline characters
+3. **Re-upload to n8n**: Save the fixed file and re-upload when creating Google credentials
+
+#### **General Troubleshooting:**
+- **Check n8n logs**: `docker compose logs n8n`
+- **Verify ngrok**: Check http://localhost:4040 for tunnel status
+- **Test credentials**: Ensure all API keys are valid and properly configured
+- **Google permissions**: Verify Google Sheet is shared with service account email
+- **Twilio webhook**: Confirm webhook URL is correctly set in Twilio console
+
+#### **Demo Setup Issues:**
+- **Docker not running**: Start Docker Desktop before running setup scripts
+- **ngrok not installed**: Use the Docker-based ngrok (no manual installation needed)
+- **Port conflicts**: Ensure ports 5678 and 4040 are available
+- **File permissions**: Make sure scripts are executable (Linux/Mac)
+
+### **Getting Help:**
+- Check the detailed setup guides in the repository
+- Review the demo script for step-by-step instructions
+- Ensure all prerequisites are met before starting
